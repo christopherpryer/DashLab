@@ -2,6 +2,7 @@
 myMap = document.getElementById('myMap')
 myMap1 = document.getElementById('myMap1')
 chart1 = document.getElementById('chart1')
+chart2 = document.getElementById('chart2')
 
 //static data read
 Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
@@ -29,7 +30,8 @@ Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
         color = [,"rgb(255,65,54)","rgb(133,20,75)","rgb(255,133,27)","lightgrey"],
         citySize = [],
         hoverText = [],
-        showMeDates = unpack(rows, 'ShipStart'),
+        shipStart = unpack(rows, 'ShipStart'),
+        shipEnd = unpack(rows, 'ShipEnd'),
         scale = 300;
 
     //establish data scaling and presentation text
@@ -184,11 +186,14 @@ Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
           pn = data.points[i].pointNumber;
           tn = data.points[i].curveNumber;
         };
+
+        //vars to dive into choro selection
         var state = allStates[pn];
         var cityCount = 0;
         var arrayOfData = [];
         var arrayOfCities = [];
 
+        //grabs data from each necessary record and appends to arrays
         for(var i=0; i < cityName.length; i++){
           if (allStates[i] == state){
             cityCount++;
@@ -198,10 +203,10 @@ Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
           }
         };
 
-        console.log(arrayOfData)
-
+        //var for plot
         var arrayOfTraces = [];
 
+        //dynamically creates the structure for the plot
         for (var i=0; i < cityCount; i++){
           var trace = {
             x: ['beef', 'pork', 'poultry', 'corn', 'wheat', 'dairy', 'cotton', 'processed veggies', 'fresh veggies', 'processed fruit', 'fresh fruit'],
@@ -213,7 +218,7 @@ Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
           arrayOfTraces.push(trace)
         };
 
-        console.log(arrayOfTraces);
+        //vars for the plot
         var data3 = arrayOfTraces;
         var layout2 = {barmode: 'group'};
 
@@ -225,4 +230,13 @@ Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
         }
       });
 
+      //bellow is for line chart
+      var data4 = [{
+        x: shipStart,
+        y: cityExports,
+        mode: 'scatter',
+        name: 'test'
+      }];
+
+      Plotly.newPlot(chart2, data4, {showLink: false});
 });
