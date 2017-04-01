@@ -5,7 +5,7 @@ chart1 = document.getElementById('chart1')
 chart2 = document.getElementById('chart2')
 
 //static data read
-Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
+Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
 
     function unpack(rows, key) {
         return rows.map(function(row) { return row[key]; });
@@ -65,7 +65,7 @@ Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
         autosize: false,
         width: 800,
         height: 500,
-        title: '2014 US City Populations',
+        title: '2011 Total Goods Export By Cities',
         showlegend: true,
         geo: {
             scope: 'usa',
@@ -108,11 +108,13 @@ Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
         }
       ];
 
+      var layout5 = {title: 'City Data'}
+
       //if the bar chart is there update it, if it isn't create it
       if (isPlot == false){
-        Plotly.plot(chart1, data2, {showLink: false});
+        Plotly.plot(chart1, data2, layout5, {showLink: false});
       } else {
-        Plotly.newPlot(chart1, data2);
+        Plotly.newPlot(chart1, data2, layout5);
       }
     });
 
@@ -145,7 +147,7 @@ Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
               [0.8, 'rgb(117,107,177)'], [1, 'rgb(84,39,143)']
           ],
           colorbar: {
-              title: 'Millions USD',
+              title: 'Weight',
               thickness: 10
           },
           marker: {
@@ -160,7 +162,7 @@ Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
       var layout1 = {
           height: 500,
           width: 800,
-          title: '2011 US Agriculture Exports by State',
+          title: '2011 Goods Exports by State',
           geo:{
               scope: 'usa',
               showlakes: true,
@@ -220,7 +222,7 @@ Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
 
         //vars for the plot
         var data3 = arrayOfTraces;
-        var layout2 = {barmode: 'group'};
+        var layout2 = {title: 'City Data', barmode: 'group'};
 
         //if the bar chart is there update it, if it isn't create it (TODO this might be old, change if necessary - idk if there's a dif)
         if (isPlot == false){
@@ -265,7 +267,8 @@ Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
         },
         yaxis: {
             fixedrange: true
-        }
+        },
+        autosize: true
       };
 
       var x = [];
