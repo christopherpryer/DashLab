@@ -230,13 +230,56 @@ Plotly.d3.csv('data/hackprinceton_test.csv', function(err, rows){
         }
       });
 
-      //bellow is for line chart
+      //bellow is for line chart along with range selector
+      var selectorOptions = {
+        buttons: [{
+            step: 'month',
+            stepmode: 'backward',
+            count: 1,
+            label: '1m'
+        }, {
+            step: 'month',
+            stepmode: 'backward',
+            count: 6,
+            label: '6m'
+        }, {
+            step: 'year',
+            stepmode: 'todate',
+            count: 1,
+            label: 'YTD'
+        }, {
+            step: 'year',
+            stepmode: 'backward',
+            count: 1,
+            label: '1y'
+        }, {
+            step: 'all',
+        }],
+      };
+
+      var layout3 = {
+        title: 'Time series with range slider and selectors',
+        xaxis: {
+            rangeselector: selectorOptions,
+            rangeslider: {}
+        },
+        yaxis: {
+            fixedrange: true
+        }
+      };
+
+      var x = [];
+
+      for(var i=0; i < shipStart.length; i++){
+        x.push(new Date(shipStart[i]));
+      };
+
       var data4 = [{
-        x: shipStart,
+        x: x,
         y: cityExports,
-        mode: 'scatter',
+        mode: 'lines',
         name: 'test'
       }];
 
-      Plotly.newPlot(chart2, data4, {showLink: false});
+      Plotly.newPlot(chart2, data4, layout3, {showLink: false});
 });
