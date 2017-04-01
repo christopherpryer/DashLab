@@ -1,0 +1,15 @@
+Hackprinceton TODO:
+-plot code
+-all drill down code
+-hover-drop data
+-dash layout
+-dash share/invite visuals
+-dash save visuals
+-host
+-dash save ability
+-dash share/invite ability
+-dash lab env. config
+-geocode script
+-authentication config
+-user utilization
+-smart/intelligent features
