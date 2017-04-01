@@ -135,6 +135,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
         }
       });
       myMap.on('plotly_hover', function(data){
+        isClicked1 = false;
         var wrapper = document.getElementById('chart1Wrapper');
         if ($(wrapper).css("visibility") == "hidden") {
           wrapper.style.visibility = 'visible';
@@ -296,6 +297,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
         }
       });
       myMap1.on('plotly_hover', function(data){
+        isClicked = false;
         var wrapper = document.getElementById('chart1Wrapper');
         if ($(wrapper).css("visibility") == "hidden") {
           wrapper.style.visibility = 'visible';
