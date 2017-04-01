@@ -9,6 +9,10 @@
   <link rel="stylesheet" type="text/css" href="static/css/iThing.css" />
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+
+  <!--popup library-->
+  <script src="dist/sweetalert.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="dist/sweetalert.css">
   <script>
   function htmlbodyHeightUpdate(){
 var height3 = $( window ).height()
@@ -115,7 +119,7 @@ $( window ).scroll(function() {
 			float: none;
 			width: auto;
 			margin-top: 0;
-			background-color: transparent;
+			background-color: #080808;
 			border: 0;
 			-webkit-box-shadow: none;
 			box-shadow: none;
@@ -133,12 +137,14 @@ $( window ).scroll(function() {
 
 		/*gives sidebar width/height*/
 		nav.sidebar{
-			width: 200px;
-			height: 100%;
+			width: 190px;
+			height: 200px;
 			margin-left: -160px;
 			float: left;
 			z-index: 8000;
 			margin-bottom: 0px;
+      margin-right: auto;
+      position: fixed;
 		}
 
 		/*give sidebar 100% width;*/
@@ -189,9 +195,7 @@ $( window ).scroll(function() {
 		padding-left: 15px;
 	}
   #dashContainer{
-    display: inline;
-    float: right;
-    width: 86%;
+    width: 100%;
   }
   </style>
 </head>
@@ -213,12 +217,13 @@ $( window ).scroll(function() {
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right" style="margin-right: 50px;">
-          <li><a href="">Save</a></li>
+          <li><a href="#" class="btn btn-default" onClick="saveDash()" style="background-color: #CED1DA; color: black; width: 80px; height: 50px;"> <span style="font-size:24px;" class="glyphicon glyphicon-floppy-saved"> </span></a></li>
         </ul>
       </div>
     </div>
   </div>
-  <nav class="navbar navbar-inverse sidebar" role="navigation" style="z-index: 90;">
+  <div id="dashContainer">
+  <nav class="navbar navbar-inverse sidebar" role="navigation" style="z-index: 90; float: left;">
       <div class="container-fluid">
   		<!-- Brand and toggle get grouped for better mobile display -->
   		<div class="navbar-header">
@@ -237,17 +242,21 @@ $( window ).scroll(function() {
   				<li ><a href="#">Share<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
 
   				<li class="dropdown">
-  					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Saved Dashboards <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a>
-  					<ul class="dropdown-menu forAnimate" role="menu">
-
+  					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Saved Dashboards <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-floppy-saved"></span></a>
+  					<ul id="dashboardList" class="dropdown-menu forAnimate" role="menu">
+              <!--<li><a href="#">Action</a></li>
+						<li><a href="#">Another action</a></li>
+						<li><a href="#">Something else here</a></li>
+						<li class="divider"></li>
+						<li><a href="#">Separated link</a></li>-->
   					</ul>
   				</li>
   			</ul>
   		</div>
   	</div>
   </nav>
-  <div id="dashContainer">
-  <div class="container-fluid">
+
+  <div class="container-fluid" style=" display: inline; float: right; max-width: 85%; margin-left: 0; margin-right: 0;">
     <div class="row">
       <div id="chart2Wrapper">
       <div class="col-sm-12">

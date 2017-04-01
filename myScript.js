@@ -109,7 +109,6 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
       ];
 
       var layout5 = {title: 'City Data'}
-
       //if the bar chart is there update it, if it isn't create it
       if (isPlot == false){
         Plotly.plot(chart1, data2, layout5, {showLink: false});
@@ -286,3 +285,28 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
 
       Plotly.newPlot(chart2, data4, layout3, {showLink: false});
 });
+
+
+var saveDash = function(){
+    swal({
+    title: "Save Dashboard",
+    text: "",
+    type: "input",
+    showCancelButton: true,
+    closeOnConfirm: false,
+    animation: "slide-from-top",
+    inputPlaceholder: "Enter your dashboard title here"
+  },
+  function(inputValue){
+    if (inputValue === false) return false;
+
+    if (inputValue === "") {
+      swal.showInputError("You need to name this dashboard!");
+      return false
+    }
+
+    swal("Success!", "Dashboard saved as: " + inputValue, "success");
+
+    document.getElementById('dashboardList').innerHTML = '<li><a href="#">' + inputValue +'</a></li>';
+  });
+};
