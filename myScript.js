@@ -295,7 +295,9 @@ var saveDash = function(){
     showCancelButton: true,
     closeOnConfirm: false,
     animation: "slide-from-top",
-    inputPlaceholder: "Enter your dashboard title here"
+    inputPlaceholder: "Enter your dashboard title here",
+    closeOnConfirm: false,
+    showLoaderOnConfirm: true
   },
   function(inputValue){
     if (inputValue === false) return false;
@@ -304,9 +306,14 @@ var saveDash = function(){
       swal.showInputError("You need to name this dashboard!");
       return false
     }
+    setTimeout(function(){
+        swal("Success!", "Dashboard saved as: " + inputValue, "success");
+    }, 2000);
 
-    swal("Success!", "Dashboard saved as: " + inputValue, "success");
-
-    document.getElementById('dashboardList').innerHTML = '<li><a href="#">' + inputValue +'</a></li>';
+    document.getElementById('dashboardList').insertAdjacentHTML('afterbegin', '<li><a href="#">' + inputValue +'</a></li>');
   });
 };
+
+var shareDash = function(){
+  swal("Share this dashboard!", "www.dashlab-e5679.firebaseapp.com");
+}

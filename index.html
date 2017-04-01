@@ -10,6 +10,7 @@
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 
+
   <!--popup library-->
   <script src="dist/sweetalert.min.js"></script>
   <link rel="stylesheet" type="text/css" href="dist/sweetalert.css">
@@ -138,7 +139,7 @@ $( window ).scroll(function() {
 		/*gives sidebar width/height*/
 		nav.sidebar{
 			width: 190px;
-			height: 200px;
+			height: 235px;
 			margin-left: -160px;
 			float: left;
 			z-index: 8000;
@@ -213,7 +214,7 @@ $( window ).scroll(function() {
         <a class="navbar-brand" href="../">
           <span class="glyphicon glyphicon-chevron-left"></span>
         </a>
-        <a class="navbar-brand" href="./">DashLab</a>
+        <a class="navbar-brand" href="./" style="font-size: 28px;">DashLab</a>
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right" style="margin-right: 50px;">
@@ -233,13 +234,13 @@ $( window ).scroll(function() {
   				<span class="icon-bar"></span>
   				<span class="icon-bar"></span>
   			</button>
-  			<a class="navbar-brand" href="#">Tools</a>
+  			<h3 style="color: white;">Tools</h3>
   		</div>
   		<!-- Collect the nav links, forms, and other content for toggling -->
   		<div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
   			<ul class="nav navbar-nav">
-  				<li class="active"><a href="#">Home<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span></a></li>
-  				<li ><a href="#">Share<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
+  				<li class="active"><a href="index.html">Home<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span></a></li>
+  				<li ><a href="#" onClick="shareDash()">Share<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
 
   				<li class="dropdown">
   					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Saved Dashboards <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-floppy-saved"></span></a>
