@@ -1,8 +1,8 @@
 //html elements
-myMap = document.getElementById('myMap')
-myMap1 = document.getElementById('myMap1')
-chart1 = document.getElementById('chart1')
-chart2 = document.getElementById('chart2')
+myMap = document.getElementById('myMap');
+myMap1 = document.getElementById('myMap1');
+chart1 = document.getElementById('chart1');
+chart2 = document.getElementById('chart2');
 
 //static data read
 Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
@@ -13,6 +13,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
 
     //main vars
     var cityName = unpack(rows, 'SiteCity'),
+        cityState = unpack(rows, 'state'),
         cityExports = unpack(rows, 'total exports'),
         cityLat = unpack(rows, 'Lat'),
         cityLon = unpack(rows, 'Lon'),
@@ -27,7 +28,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
         cityCorn = unpack(rows, 'corn'),
         cityWheat = unpack(rows, 'wheat'),
         cityCotton = unpack(rows, 'cotton'),
-        color = [,"rgb(255,65,54)","rgb(133,20,75)","rgb(255,133,27)","lightgrey"],
+        color = ["rgb(255,65,54)","rgb(133,20,75)","rgb(255,133,27)","lightgrey"],
         citySize = [],
         hoverText = [],
         shipStart = unpack(rows, 'ShipStart'),
@@ -63,7 +64,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
     //site bubble map layout
     var layout = {
         autosize: false,
-        width: 800,
+        width: 700,
         height: 500,
         title: '2011 Total Goods Export By Cities',
         showlegend: true,
@@ -82,14 +83,16 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
     };
 
     //create new site bubble map plot (TODO is Plotly.Plot better suited for this?)
-    Plotly.newPlot(myMap, data, layout, {showLink: false});
+    Plotly.plot(myMap, data, layout, {showLink: false});
 
+    var isClicked = false;
     //plotly event for clicking a site -- this will create a bar chart
     myMap.on('plotly_click', function(data){
+      isClicked = true;
       var isPlot = false;
       var wrapper = document.getElementById('chart1Wrapper');
       if ($(wrapper).css("visibility") == "hidden") {
-        wrapper.style.visibility = 'visible'
+        wrapper.style.visibility = 'visible';
       } else {
         isPlot = true;
       }
@@ -98,7 +101,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
       for(var i=0; i < data.points.length; i++){
         pn = data.points[i].pointNumber;
         tn = data.points[i].curveNumber;
-      };
+      }
       var data2 = [
         {
           x: ['beef', 'pork', 'poultry', 'corn', 'wheat', 'dairy', 'cotton', 'processed veggies', 'fresh veggies', 'processed fruit', 'fresh fruit'],
@@ -108,14 +111,59 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
         }
       ];
 
-      var layout5 = {title: 'City Data'}
+      var layout5 = {title: cityName[pn]};
       //if the bar chart is there update it, if it isn't create it
-      if (isPlot == false){
-        Plotly.plot(chart1, data2, layout5, {showLink: false});
+      if (isPlot === false){
+        Plotly.newPlot(chart1, data2, layout5, {showLink: false});
       } else {
         Plotly.newPlot(chart1, data2, layout5);
       }
     });
+
+      var isPlot = false;
+      myMap.on('plotly_unhover', function(data){
+        var wrapper = document.getElementById('chart1Wrapper');
+        if ($(wrapper).css("visibility") == "hidden") {
+          wrapper.style.visibility = 'visible';
+        }
+        if (isClicked === true){
+          wrapper.style.visibility = 'visible';
+        }
+        else {
+          isPlot = true;
+          wrapper.style.visibility = 'hidden';
+        }
+      });
+      myMap.on('plotly_hover', function(data){
+        var wrapper = document.getElementById('chart1Wrapper');
+        if ($(wrapper).css("visibility") == "hidden") {
+          wrapper.style.visibility = 'visible';
+        } else {
+          isPlot = true;
+        }
+        var pn='',
+        tn='';
+        for(var i=0; i < data.points.length; i++){
+          pn = data.points[i].pointNumber;
+          tn = data.points[i].curveNumber;
+        }
+        var data2 = [
+          {
+            x: ['beef', 'pork', 'poultry', 'corn', 'wheat', 'dairy', 'cotton', 'processed veggies', 'fresh veggies', 'processed fruit', 'fresh fruit'],
+            y: [cityBeef[pn], cityPork[pn], cityPoultry[pn], cityCorn[pn], cityWheat[pn],
+          cityDairy[pn], cityCotton[pn], cityProcVeg[pn], cityFreshVeg[pn], cityProcFruit[pn], cityFreshFruit[pn]],
+            type: 'bar'
+          }
+        ];
+
+        var layout5 = {title: cityName[pn]};
+        //if the bar chart is there update it, if it isn't create it
+        if (isPlot === false && isClicked === false){
+          Plotly.newPlot(chart1, data2, layout5, {showLink: false});
+        } if (isPlot === true && isClicked === false) {
+          Plotly.newPlot(chart1, data2, layout5);
+        }
+      });
 
     //create empty arrays, iterate through state list and grab corresponding quantity and aggragate in new lists
     var allExports = unpack(rows, 'total exports');
@@ -123,13 +171,13 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
     var aggStates = [];
     var aggExports = [];
     for (var i=0; i < unpack(rows, 'SiteState').length; i++){
-      if (aggStates.includes(allStates[i]) == true){
+      if (aggStates.includes(allStates[i]) === true){
         aggExports[aggStates.indexOf(allStates[i])] = Number(aggExports[aggStates.indexOf(allStates[i])]) + Number(allExports[i]);
       } else {
         aggStates[i] = allStates[i];
         aggExports[i] = allExports[i];
       }
-    };
+    }
 
     //state map data (TODO var naming)
     var data1 = [{
@@ -160,7 +208,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
       //state map layout
       var layout1 = {
           height: 500,
-          width: 800,
+          width: 700,
           title: '2011 Goods Exports by State',
           geo:{
               scope: 'usa',
@@ -172,12 +220,14 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
       //create state map
       Plotly.newPlot(myMap1, data1, layout1, {showLink: false});
 
+      var isClicked1 = false;
       //plotly click event on state
       myMap1.on('plotly_click', function(data){
+        isClicked1 = true;
         var isPlot = false;
         var wrapper = document.getElementById('chart1Wrapper');
         if ($(wrapper).css("visibility") == "hidden") {
-          wrapper.style.visibility = 'visible'
+          wrapper.style.visibility = 'visible';
         } else {
           isPlot = true;
         }
@@ -186,7 +236,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
         for(var i=0; i < data.points.length; i++){
           pn = data.points[i].pointNumber;
           tn = data.points[i].curveNumber;
-        };
+        }
 
         //vars to dive into choro selection
         var state = allStates[pn];
@@ -200,9 +250,9 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
             cityCount++;
             arrayOfData.push([cityBeef[i], cityPork[i], cityPoultry[i], cityCorn[i], cityWheat[i],
           cityDairy[i], cityCotton[i], cityProcVeg[i], cityFreshVeg[i], cityProcFruit[i], cityFreshFruit[i]]);
-            arrayOfCities.push(cityName[i])
+            arrayOfCities.push(cityName[i]);
           }
-        };
+        }
 
         //var for plot
         var arrayOfTraces = [];
@@ -214,22 +264,102 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
             y: arrayOfData[i],
             name: arrayOfCities[i],
             type: 'bar'
-          }
+          };
 
-          arrayOfTraces.push(trace)
-        };
+          arrayOfTraces.push(trace);
+        }
 
         //vars for the plot
         var data3 = arrayOfTraces;
-        var layout2 = {title: 'City Data', barmode: 'group'};
+        var layout2 = {title: cityState[pn], barmode: 'group'};
 
         //if the bar chart is there update it, if it isn't create it (TODO this might be old, change if necessary - idk if there's a dif)
-        if (isPlot == false){
+        if (isPlot === false){
           Plotly.plot(chart1, data3, layout2, {showLink: false});
         } else {
           Plotly.newPlot(chart1, data3, layout2);
         }
       });
+
+      var isPlot = false;
+      myMap1.on('plotly_unhover', function(data){
+        var wrapper = document.getElementById('chart1Wrapper');
+        if ($(wrapper).css("visibility") == "hidden") {
+          wrapper.style.visibility = 'visible';
+        }
+        if (isClicked1 === true){
+          wrapper.style.visibility = 'visible';
+        }
+        else {
+          isPlot = true;
+          wrapper.style.visibility = 'hidden';
+        }
+      });
+      myMap1.on('plotly_hover', function(data){
+        var wrapper = document.getElementById('chart1Wrapper');
+        if ($(wrapper).css("visibility") == "hidden") {
+          wrapper.style.visibility = 'visible';
+        } else {
+          isPlot = true;
+        }
+        var pn='',
+        tn='';
+        for(var i=0; i < data.points.length; i++){
+          pn = data.points[i].pointNumber;
+          tn = data.points[i].curveNumber;
+        }
+
+        //vars to dive into choro selection
+        var state = allStates[pn];
+        var cityCount = 0;
+        var arrayOfData = [];
+        var arrayOfCities = [];
+
+        //grabs data from each necessary record and appends to arrays
+        for(var i=0; i < cityName.length; i++){
+          if (allStates[i] == state){
+            cityCount++;
+            arrayOfData.push([cityBeef[i], cityPork[i], cityPoultry[i], cityCorn[i], cityWheat[i],
+          cityDairy[i], cityCotton[i], cityProcVeg[i], cityFreshVeg[i], cityProcFruit[i], cityFreshFruit[i]]);
+            arrayOfCities.push(cityName[i]);
+          }
+        }
+
+        //var for plot
+        var arrayOfTraces = [];
+
+        //dynamically creates the structure for the plot
+        for (var i=0; i < cityCount; i++){
+          var trace = {
+            x: ['beef', 'pork', 'poultry', 'corn', 'wheat', 'dairy', 'cotton', 'processed veggies', 'fresh veggies', 'processed fruit', 'fresh fruit'],
+            y: arrayOfData[i],
+            name: arrayOfCities[i],
+            type: 'bar'
+          };
+
+          arrayOfTraces.push(trace);
+        }
+
+        //vars for the plot
+        var data3 = arrayOfTraces;
+        var layout2 = {title: cityState[pn], barmode: 'group'};
+
+        //if the bar chart is there update it, if it isn't create it (TODO this might be old, change if necessary - idk if there's a dif)
+        if (isPlot === false && isClicked1 === false){
+          Plotly.plot(chart1, data3, layout2, {showLink: false});
+        } if (isPlot === true && isClicked1 === false) {
+          Plotly.newPlot(chart1, data3, layout2);
+        }
+      });
+
+
+      var allCountryNames = unpack(rows, 'country'),
+        allYear = unpack(rows, 'year'),
+        allGdp = unpack(rows, 'gdpPercap'),
+        listofCountries = ['total exports', 'beef', 'pork', 'poultry', 'corn', 'wheat', 'dairy', 'cotton', 'veggies proc', 'veggies fresh', 'fruit proc', 'fruit fresh'],
+        currentCountry,
+        currentGdp = [],
+        currentYear = [];
 
       //bellow is for line chart along with range selector
       var selectorOptions = {
@@ -258,33 +388,75 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
         }],
       };
 
-      var layout3 = {
-        title: 'Time series with range slider and selectors',
-        xaxis: {
-            rangeselector: selectorOptions,
-            rangeslider: {}
-        },
-        yaxis: {
-            fixedrange: true
-        },
-        autosize: true
-      };
-
-      var x = [];
 
       for(var i=0; i < shipStart.length; i++){
-        x.push(new Date(shipStart[i]));
-      };
+        currentYear.push(new Date(shipStart[i]));
+      }
 
-      var data4 = [{
-        x: x,
-        y: cityExports,
-        mode: 'lines',
-        name: 'test'
-      }];
 
-      Plotly.newPlot(chart2, data4, layout3, {showLink: false});
+      //////////////////////
+
+
+
+    function getCountryData(chosenCountry) {
+        currentGdp = unpack(rows, chosenCountry);
+        currentYear = currentYear;
+    }
+
+    // Default Country Data
+    setBubblePlot('total exports');
+
+    function setBubblePlot(chosenCountry) {
+        getCountryData(chosenCountry);
+
+        var newTrace = {
+            x: currentYear,
+            y: currentGdp,
+            mode: 'lines+markers',
+            marker: {
+                size: 12,
+                opacity: 0.5
+            }
+        };
+
+        var data5 = [newTrace];
+
+        var layout6 = {
+            title:'Displaying ' + chosenCountry,
+            xaxis: {
+                rangeselector: selectorOptions,
+                rangeslider: {}
+            },
+            yaxis: {
+                fixedrange: true
+            },
+            autosize: true
+        };
+
+        Plotly.newPlot(chart2, data5, layout6);
+    }
+
+    var innerContainer = document.querySelector('[data-num="0"'),
+        plotEl = innerContainer.querySelector('.plot'),
+        countrySelector = innerContainer.querySelector('.countrydata');
+
+    function assignOptions(textArray, selector) {
+        for (var i = 0; i < textArray.length;  i++) {
+            var currentOption = document.createElement('option');
+            currentOption.text = textArray[i];
+            selector.appendChild(currentOption);
+        }
+    }
+
+    assignOptions(listofCountries, countrySelector);
+
+    function updateCountry(){
+        setBubblePlot(countrySelector.value);
+    }
+
+    countrySelector.addEventListener('change', updateCountry, false);
 });
+
 
 
 var saveDash = function(){
@@ -296,7 +468,6 @@ var saveDash = function(){
     closeOnConfirm: false,
     animation: "slide-from-top",
     inputPlaceholder: "Enter your dashboard title here",
-    closeOnConfirm: false,
     showLoaderOnConfirm: true
   },
   function(inputValue){
@@ -304,16 +475,17 @@ var saveDash = function(){
 
     if (inputValue === "") {
       swal.showInputError("You need to name this dashboard!");
-      return false
+      return false;
     }
     setTimeout(function(){
         swal("Success!", "Dashboard saved as: " + inputValue, "success");
     }, 2000);
 
-    document.getElementById('dashboardList').insertAdjacentHTML('afterbegin', '<li><a href="#">' + inputValue +'</a></li>');
+  document.getElementById('dashboardList').insertAdjacentHTML('afterbegin', '<li><a href="#">' + inputValue +'</a></li>');
   });
 };
 
-var shareDash = function(){
-  swal("Share this dashboard!", "www.dashlab-e5679.firebaseapp.com");
-}
+
+var shareDashboard = function(){
+  swal("Share your dashboard!", "www.dash-lab.firebaseapp.com");
+};
