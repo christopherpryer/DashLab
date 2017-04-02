@@ -5,16 +5,16 @@ var chart1 = document.getElementById('chart1');
 var chart2 = document.getElementById('chart2');
 
 
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyAdcWCMw9N3lOx1i4Cw7c1MQ1DKrI5n1mM",
-    authDomain: "dashlab-34921.firebaseapp.com",
-    databaseURL: "https://dashlab-34921.firebaseio.com",
-    projectId: "dashlab-34921",
-    storageBucket: "dashlab-34921.appspot.com",
-    messagingSenderId: "633738023700"
-  };
-  firebase.initializeApp(config);
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyBH5nHQPK6ECo0eUuRi7RQl-1LpaQBIjpw",
+  authDomain: "dashlab-fd866.firebaseapp.com",
+  databaseURL: "https://dashlab-fd866.firebaseio.com",
+  projectId: "dashlab-fd866",
+  storageBucket: "dashlab-fd866.appspot.com",
+  messagingSenderId: "476889739300"
+};
+firebase.initializeApp(config);
 
 var lineRef = firebase.database().ref("charts/line");
 var myChart1Ref = firebase.database().ref("charts/bar");
@@ -499,7 +499,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
       var allCountryNames = unpack(rows, 'country'),
         allYear = unpack(rows, 'year'),
         allGdp = unpack(rows, 'gdpPercap'),
-        listofCountries = ['total exports', 'beef', 'pork', 'poultry', 'corn', 'wheat', 'dairy', 'cotton', 'veggies proc', 'veggies fresh', 'fruit proc', 'fruit fresh'],
+        listofCountries = ['total exports', 'beef', 'pork', 'poultry', 'corn', 'wheat', 'dairy', 'cotton', 'veggies proc', 'veggies fresh', 'fruits proc', 'fruits fresh'],
         currentCountry,
         currentGdp = [],
         currentYear = [];
@@ -610,6 +610,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
   }
     lineRef.on('child_changed', getChild);
 
+    getChild();
 });
 
 
