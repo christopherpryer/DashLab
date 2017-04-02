@@ -396,7 +396,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
       }
 
 
-      //////////////////////
+      //////////////////////will change variable names////////////////
 
 
 
