@@ -1,9 +1,52 @@
 //html elements
-myMap = document.getElementById('myMap');
-myMap1 = document.getElementById('myMap1');
-chart1 = document.getElementById('chart1');
-chart2 = document.getElementById('chart2');
+var myMap = document.getElementById('myMap');
+var myMap1 = document.getElementById('myMap1');
+var chart1 = document.getElementById('chart1');
+var chart2 = document.getElementById('chart2');
 
+
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyAdcWCMw9N3lOx1i4Cw7c1MQ1DKrI5n1mM",
+    authDomain: "dashlab-34921.firebaseapp.com",
+    databaseURL: "https://dashlab-34921.firebaseio.com",
+    projectId: "dashlab-34921",
+    storageBucket: "dashlab-34921.appspot.com",
+    messagingSenderId: "633738023700"
+  };
+  firebase.initializeApp(config);
+
+var lineRef = firebase.database().ref("charts/line");
+var myChart1Ref = firebase.database().ref("charts/bar");
+var myChart1Ref1 = firebase.database().ref("charts/stackedbar");
+var dashboardRef = firebase.database().ref("dashboards");
+
+var updateDashList = function(dash){
+  document.getElementById('dashboardList').insertAdjacentHTML('afterbegin', '<li><a href="">' + dash +'</a></li>');
+}
+
+
+
+dashboardRef.on('child_added', function(data) {
+  reloadDashList();
+});
+
+
+function reloadDashList(){
+  var allDash = firebase.database().ref("dashboards");
+  var recentDash = allDash.limitToLast(10);
+
+  recentDash.once('value').then(function(snapshot) {
+    $('#dashboardList').empty();
+    snapshot.forEach(function(childSnapshot) {
+      updateDashList(childSnapshot.val().dashName);
+    });
+
+});
+}
+window.addEventListener('load', function() {
+  reloadDashList();
+});
 //static data read
 Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
 
@@ -88,6 +131,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
     var isClicked = false;
     //plotly event for clicking a site -- this will create a bar chart
     myMap.on('plotly_click', function(data){
+
       isClicked = true;
       var isPlot = false;
       var wrapper = document.getElementById('chart1Wrapper');
@@ -102,6 +146,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
         pn = data.points[i].pointNumber;
         tn = data.points[i].curveNumber;
       }
+      myChart1Ref.set({sitePointer: pn});
       var data2 = [
         {
           x: ['beef', 'pork', 'poultry', 'corn', 'wheat', 'dairy', 'cotton', 'processed veggies', 'fresh veggies', 'processed fruit', 'fresh fruit'],
@@ -119,6 +164,41 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
         Plotly.newPlot(chart1, data2, layout5);
       }
     });
+
+    function updateChart1City(sitePointer){
+      isClicked = true;
+      var isPlot = false;
+      var wrapper = document.getElementById('chart1Wrapper');
+      if ($(wrapper).css("visibility") == "hidden") {
+        wrapper.style.visibility = 'visible';
+      } else {
+        isPlot = true;
+      }
+      var pn = sitePointer;
+      var data2 = [
+        {
+          x: ['beef', 'pork', 'poultry', 'corn', 'wheat', 'dairy', 'cotton', 'processed veggies', 'fresh veggies', 'processed fruit', 'fresh fruit'],
+          y: [cityBeef[pn], cityPork[pn], cityPoultry[pn], cityCorn[pn], cityWheat[pn],
+        cityDairy[pn], cityCotton[pn], cityProcVeg[pn], cityFreshVeg[pn], cityProcFruit[pn], cityFreshFruit[pn]],
+          type: 'bar'
+        }
+      ];
+
+      var layout5 = {title: cityName[pn]};
+      //if the bar chart is there update it, if it isn't create it
+      if (isPlot === false){
+        Plotly.newPlot(chart1, data2, layout5, {showLink: false});
+      } else {
+        Plotly.newPlot(chart1, data2, layout5);
+      }
+    }
+    function getChild1(){
+      myChart1Ref.on('value', function(snapshot) {
+      updateChart1City(snapshot.val().sitePointer);
+
+    });
+  }
+    myChart1Ref.on('child_changed', getChild1);
 
       var isPlot = false;
       myMap.on('plotly_unhover', function(data){
@@ -238,7 +318,7 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
           pn = data.points[i].pointNumber;
           tn = data.points[i].curveNumber;
         }
-
+        myChart1Ref1.set({statePointer: pn});
         //vars to dive into choro selection
         var state = allStates[pn];
         var cityCount = 0;
@@ -281,6 +361,60 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
           Plotly.newPlot(chart1, data3, layout2);
         }
       });
+
+      function updateChart1State(cityPointer){
+        isClicked1 = true;
+        var isPlot = false;
+        var wrapper = document.getElementById('chart1Wrapper');
+        if ($(wrapper).css("visibility") == "hidden") {
+          wrapper.style.visibility = 'visible';
+        } else {
+          isPlot = true;
+        }
+        var pn = cityPointer;
+
+        //vars to dive into choro selection
+        var state = allStates[pn];
+        var cityCount = 0;
+        var arrayOfData = [];
+        var arrayOfCities = [];
+
+        //grabs data from each necessary record and appends to arrays
+        for(var i=0; i < cityName.length; i++){
+          if (allStates[i] == state){
+            cityCount++;
+            arrayOfData.push([cityBeef[i], cityPork[i], cityPoultry[i], cityCorn[i], cityWheat[i],
+          cityDairy[i], cityCotton[i], cityProcVeg[i], cityFreshVeg[i], cityProcFruit[i], cityFreshFruit[i]]);
+            arrayOfCities.push(cityName[i]);
+          }
+        }
+
+        //var for plot
+        var arrayOfTraces = [];
+
+        //dynamically creates the structure for the plot
+        for (var i=0; i < cityCount; i++){
+          var trace = {
+            x: ['beef', 'pork', 'poultry', 'corn', 'wheat', 'dairy', 'cotton', 'processed veggies', 'fresh veggies', 'processed fruit', 'fresh fruit'],
+            y: arrayOfData[i],
+            name: arrayOfCities[i],
+            type: 'bar'
+          };
+
+          arrayOfTraces.push(trace);
+        }
+
+        //vars for the plot
+        var data3 = arrayOfTraces;
+        var layout2 = {title: cityState[pn], barmode: 'group'};
+
+        //if the bar chart is there update it, if it isn't create it (TODO this might be old, change if necessary - idk if there's a dif)
+        if (isPlot === false){
+          Plotly.plot(chart1, data3, layout2, {showLink: false});
+        } else {
+          Plotly.newPlot(chart1, data3, layout2);
+        }
+      }
 
       var isPlot = false;
       myMap1.on('plotly_unhover', function(data){
@@ -353,6 +487,13 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
           Plotly.newPlot(chart1, data3, layout2);
         }
       });
+      function getChild2(){
+        myChart1Ref1.on('value', function(snapshot) {
+        updateChart1State(snapshot.val().statePointer);
+
+      });
+    }
+      myChart1Ref1.on('child_changed', getChild2);
 
 
       var allCountryNames = unpack(rows, 'country'),
@@ -453,10 +594,22 @@ Plotly.d3.csv('data/hackprinceton_geodata.csv', function(err, rows){
     assignOptions(listofCountries, countrySelector);
 
     function updateCountry(){
+        lineRef.set({lineSelect: countrySelector.value});
         setBubblePlot(countrySelector.value);
     }
 
     countrySelector.addEventListener('change', updateCountry, false);
+
+    function getChild(){
+      lineRef.on('value', function(snapshot) {
+      setBubblePlot(snapshot.val().lineSelect);
+
+      var element = document.getElementById('lineSelector');
+      element.value = snapshot.val().lineSelect;
+    });
+  }
+    lineRef.on('child_changed', getChild);
+
 });
 
 
@@ -482,12 +635,13 @@ var saveDash = function(){
     setTimeout(function(){
         swal("Success!", "Dashboard saved as: " + inputValue, "success");
     }, 2000);
-
-  document.getElementById('dashboardList').insertAdjacentHTML('afterbegin', '<li><a href="#">' + inputValue +'</a></li>');
+    dashboardRef.push({dashName: inputValue});
+    reloadDashList();
+  //document.getElementById('dashboardList').insertAdjacentHTML('afterbegin', '<li><a href="#">' + inputValue +'</a></li>');
   });
 };
 
 
 var shareDashboard = function(){
-  swal("Share your dashboard!", "www.dash-lab.firebaseapp.com");
+  swal("Share your dashboard!", "https://dashlab-34921.firebaseapp.com/");
 };

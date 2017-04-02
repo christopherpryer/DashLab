@@ -11,6 +11,8 @@
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 
 
+  <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+
   <!--popup library-->
   <script src="dist/sweetalert.min.js"></script>
   <link rel="stylesheet" type="text/css" href="dist/sweetalert.css">
@@ -211,10 +213,10 @@ $( window ).scroll(function() {
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="../">
+        <a class="navbar-brand" href="">
           <span class="btn btn-default glyphicon glyphicon-refresh" style="font-size:24px; height: 50px; margin-top: -15px;"></span>
         </a>
-        <a class="navbar-brand" href="./" style="font-size: 28px;">DashLab</a>
+        <a class="navbar-brand" href="" style="font-size: 28px;">DashLab</a>
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right" style="margin-right: 50px;">
@@ -240,7 +242,7 @@ $( window ).scroll(function() {
   		<div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
   			<ul class="nav navbar-nav">
   				<li class="active"><a href="index.html">Home<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span></a></li>
-  				<li ><a href="#" onClick="swal('Share your dashboard!', 'www.dash-lab.firebaseapp.com')">Share<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
+  				<li ><a href="#" onClick="swal('Share your dashboard!', 'https://dashlab-34921.firebaseapp.com/')">Share<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
 
   				<li class="dropdown">
   					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dashboards <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-floppy-saved"></span></a>
@@ -257,7 +259,7 @@ $( window ).scroll(function() {
   	</div>
   </nav>
 
-  <div class="container-fluid" style=" display: inline; float: left; width: 90%; margin-left: 10%; margin-right: auto;">
+  <div class="container-fluid" style=" display: inline; float: left; width: 85%; margin-left: 15%; margin-right: auto;">
     <div class="row">
       <div id="chart2Wrapper">
       <div class="col-sm-12">
@@ -270,7 +272,7 @@ $( window ).scroll(function() {
             <div class="bubbleplot" data-num="0">
             <div id="chart2"></div>
             <div class="control-row">
-        <select class="countrydata">
+        <select id="lineSelector" class="countrydata">
         </select>
       </div>
     </div>
@@ -358,19 +360,8 @@ $( window ).scroll(function() {
   <script type="text/javascript" src="static/js/slider/jQRuler.js"></script>
   <script type="text/javascript" src="static/js/slider/slider.js"></script>
   <script type="text/javascript" src="myScript.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
-<script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyBiVjZZ0UT9e95xRKT9fglAL73OVNjAwSY",
-    authDomain: "dashlab-3a63f.firebaseapp.com",
-    databaseURL: "https://dashlab-3a63f.firebaseio.com",
-    projectId: "dashlab-3a63f",
-    storageBucket: "dashlab-3a63f.appspot.com",
-    messagingSenderId: "554133659100"
-  };
-  firebase.initializeApp(config);
-</script>
+
+
 
 </body>
 </html>
