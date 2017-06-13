@@ -1,7 +1,7 @@
 {
-  "name": "meanStarter",
+  "name": "theLab",
   "version": "0.1.0",
-  "description": "A starter layout / theme package for MEAN",
+  "description": "Layout/theme for dashlab",
   "author": {
     "name": "MEAN.io"
   },
